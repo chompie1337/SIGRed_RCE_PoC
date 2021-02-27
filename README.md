@@ -45,7 +45,7 @@ This has been tested working on Windows Server 2019, 2016, 2012R2, and 2012 (x64
 `dns.exe` offset mapping: (last 12bits of the offset for `dns!RR_Free`, `` dns!`string` ``) : (offset of `dns!RR_Free`, `dns!NsecDnsRecordConvert`, `dns!_imp_exit`)
 `msvcrt.dll` offset mapping: (last 12 bits of offset for `msvcrt!exit`): (offset of `msvcrt!exit`, offset of `msvcrt!system`)
 
-***Note: In the case of an offset collision, you will have to make a selection of which set of offsets to choose. The DNS service will restart after about 5 minutes up to two times after a crash. You must restart `evildns.py` after each try. The exploit is stable, so the chance of successful "blind" exploitation is high. ***
+***Note: In the case of an offset collision, you will have to make a selection of which set of offsets to choose. The DNS service will restart after about 5 minutes up to two times after a crash. You must restart `evildns.py` after each try. The exploit is stable, so the chance of successful "blind" exploitation is high.***
 
 ## Detecting Exploitation and Workaround Fix
 
