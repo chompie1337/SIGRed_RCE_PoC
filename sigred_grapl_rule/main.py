@@ -9,8 +9,16 @@ class CmdChildOfDns(Analyzer):
     def get_queries(self) -> OneOrMany[ProcessQuery]:
         return (
             ProcessQuery()
-            .with_process_name(eq='cmd.exe')
-            .with_parent(ProcessQuery().with_process_name(eq='dns.exe'))
+            .with_process_name(eq='dns.exe')
+            .with_children(
+                ProcessQuery()
+               .with_process_name(eq='cmd.exe')
+               .with_process_name(eq='mshta.exe')
+               .with_process_name(eq='rundll32.exe')
+               .with_process_name(eq='conhost.exe')
+               .with_process_name(eq='dnscmd.exe')
+               .with_process_name(eq='werfault.exe')
+            )
             .with_asset(AssetQuery().with_hostname())
         )
     def on_response(self, response: ProcessView, output: Any):
