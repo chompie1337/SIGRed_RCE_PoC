@@ -6,7 +6,7 @@ by: [chompie](https://twitter.com/chompie1337)
 
 ## Lab Environment Setup
 
-An attacker would set up an evil domain whose NS record points to a malicious server (attacker machine)
+An attacker would set up an evil domain whose NS record points to a malicious server (attacker machine). 
 For demo/testing purposes, just set up a conditional forwarder on the victim machine to forward "evil domain" requests to your attacker machine.
 
 Tools -> DNS
