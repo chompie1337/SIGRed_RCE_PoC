@@ -4,6 +4,12 @@ by: [chompie](https://twitter.com/chompie1337)
 
 ***For research purposes only. Use at your own risk.***
 
+## Exploit Writeup
+
+Details on the methods used are here:
+
+https://www.graplsecurity.com/post/anatomy-of-an-exploit-rce-with-cve-2020-1350-sigred
+
 ## Lab Environment Setup
 
 An attacker would set up an evil domain whose NS record points to a malicious server (attacker machine). 
