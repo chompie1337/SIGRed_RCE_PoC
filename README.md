@@ -20,8 +20,6 @@ Tools -> DNS
 ![Alt text](images/forward.png?raw=true "Set up a forwarder")
 ![Alt text](images/ch0mpie.png?raw=true "Forwarding for ch0mpie.com")
 
-This is so you can listen on port 53 and still have a DNS server configured.
-
 ### Registering a custom Nameserver
 
 If you are NOT setting a forwarder, i.e. actually registering your attacker machine as a custom name server for your domain and running this over real internet...
