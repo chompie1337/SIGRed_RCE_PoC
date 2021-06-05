@@ -1,4 +1,4 @@
-# PoC Remote Code Exection Exploit for CVE-2020-1350, SigRed.
+# PoC Remote Code Execution Exploit for CVE-2020-1350, SigRed.
 
 by: [chompie](https://twitter.com/chompie1337)
 
