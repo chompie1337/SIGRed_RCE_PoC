@@ -6,9 +6,10 @@ by: [chompie](https://twitter.com/chompie1337)
 
 ## Exploit Writeup
 
-Details on the methods used are here:
+My write up on the construction of this exploit can be found here:
 
-https://www.graplsecurity.com/post/anatomy-of-an-exploit-rce-with-cve-2020-1350-sigred
+https://chompie.rip/Blog+Posts/Anatomy+of+an+Exploit+-+RCE+with++SIGRed
+
 
 ## Environment Setup
 
@@ -75,7 +76,7 @@ This has been tested working on Windows Server 2019, 2016, 2012R2, and 2012 (x64
 
 ## Detecting Exploitation and Workaround Fix
 
-This PoC includes a Grapl rule to detect exploitation of SigRed. To implement a rule for your preferred SIEM, look for invalid child processes of dns.exe.
+To implement a rule for your preferred SIEM, look for invalid child processes of dns.exe. Note that isn't the only way this could be exploited, but it would probably detect most exploitation attempts. 
 
 If patching is not possible, a workaround fix is available:
 ```
